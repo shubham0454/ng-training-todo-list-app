@@ -1,0 +1,136 @@
+<div class="container mt-5 card">
+    <!-- Task header and action buttons (New Task, Refresh) with search bar -->
+    <div class="card-body d-flex justify-content-between">
+      <!-- Title section with Tasks and small All Tasks label -->
+      <h3>Task Management<br><small class="text-muted">All Tasks</small></h3>
+  
+      <!-- New Task and Refresh buttons with a search bar below them -->
+      <div class="mb-2">
+        <button class="btn btn-warning px-3" (click)="openModel()">New Task</button>
+        <button class="btn btn-warning ms-3 px-4" (click)="getTaskList()">Refresh</button>
+  
+        <!-- Search input field -->
+        <div class="mt-2">
+          <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" (input)="onSearchTask($event)"> -->
+        </div>
+      </div>
+    </div>
+  
+    <!-- Table to display tasks with columns for Assigned To, Status, Due Date, Priority, Comments, and Actions -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th>Assigned To</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Comments</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of taskList">
+            <td>{{ task.assignedTo }}</td>
+            <td>{{ task.status }}</td>
+            <td>{{ task.dueDate | date }}</td>
+            <td>{{ task.priority }}</td>
+            <td>{{ task.comments }}</td>
+            <td>
+              <button (click)="onEditTask(task)" class="btn btn-sm btn-primary ">Edit</button>
+              <button (click)="openDeleteModal(task)" class="btn btn-sm btn-danger mx-2">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Pagination for navigating between pages of tasks -->
+    <nav>
+      <ul class="pagination justify-content-center">
+        <li class="page-item "><a class="page-link" href="#">First</a></li>
+        <li class="page-item "><a class="page-link" href="#">Prev</a></li>
+        <li class="page-item "><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        <li class="page-item"><a class="page-link" href="#">Last</a></li>
+      </ul>
+    </nav>
+  </div>
+  
+  <!-- New/Edit Task Modal -->
+  <div class="modal" id="myModal" #myModal>
+    <div class="modal-dialog">
+      <div class="modal-content p-0">
+        <div class="modal-header">
+          <h4 class="modal-title w-100 text-center">{{ taskObj.id === 0 ? 'New Task' : 'Edit Task' }}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-6">
+              <label for="assignedTo"><span class="text-danger">*</span>Assigned To</label>
+              <select class="form-control" [(ngModel)]="taskObj.assignedTo">
+                <option value="User 1">User 1</option>
+                <option value="User 2">User 2</option>
+                <option value="User 3">User 3</option>
+                <option value="User 4">User 4</option>
+                <option value="User 5">User 5</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="status"><span class="text-danger">*</span>Status</label>
+              <select class="form-control" [(ngModel)]="taskObj.status">
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-6">
+              <label for="dueDate">Due Date</label>
+              <input type="date" [(ngModel)]="taskObj.dueDate" class="form-control" placeholder="Due Date" />
+            </div>
+            <div class="col-6">
+              <label for="priority"><span class="text-danger">*</span>Priority</label>
+              <select class="form-control" [(ngModel)]="taskObj.priority">
+                <option value="Low">Low</option>
+                <option value="Normal">Normal</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12">
+              <label for="comments">Comments</label>
+              <textarea [(ngModel)]="taskObj.comments" class="form-control" placeholder="Comments"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning " (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn btn-success " (click)="taskObj.id === 0 ? onSaveTask() : onUpdateTask()">
+            {{ taskObj.id === 0 ? 'Save' : 'Update' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Task Modal -->
+  <div class="modal" id="deleteModal" #deleteModal>
+    <div class="modal-dialog">
+      <div class="modal-content p-0">
+        <div class="modal-header bg-danger text-white">
+          <h4 class="modal-title w-100 text-center">Delete Task</h4>
+        </div>
+        <div class="modal-body text-center">
+          <p>Are you sure you want to delete this task <strong>{{ taskToDelete?.assignedTo }}</strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success px-4" (click)="closeDeleteModal()">No</button>
+          <button type="button" class="btn btn-warning px-4" (click)="onDeleteTask(taskToDelete)">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
